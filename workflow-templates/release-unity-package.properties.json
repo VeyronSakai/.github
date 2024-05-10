@@ -3,5 +3,8 @@
     "description": "Workflow for releasing Unity packages.",
     "categories": [
         "Unity"
+    ],
+    "filePatterns": [
+        ".*package\\.json$"
     ]
 }
