@@ -1,0 +1,7 @@
+{
+    "name": "Release Unity Package Workflow",
+    "description": "Workflow for releasing Unity packages.",
+    "categories": [
+        "Unity"
+    ]
+}
