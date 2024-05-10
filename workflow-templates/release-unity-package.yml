@@ -16,7 +16,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_BOT_NAME: github-actions[bot]
   GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
-  PACKAGE_JSON_PATH: /path/to/package.json
+  PACKAGE_JSON_PATH: /path/to/package.json # Replace with the path to your package.json
 
 concurrency:
   group: ${{ github.workflow }}
@@ -39,7 +39,7 @@ jobs:
 
   draft:
     name: draft
-    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.base.ref == "$default-branch") || github.event_name == 'workflow_dispatch'}}
+    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.base.ref == $default-branch) || github.event_name == 'workflow_dispatch'}}
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.release_drafter.outputs.tag_name }}
@@ -90,7 +90,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          gh pr create --title "Update files for release" --body "Update files for release" --base main --head "${SOURCE_BRANCH}"
+          gh pr create --title "Update files for release" --body "Update files for release" --base $default-branch --head "${SOURCE_BRANCH}"
           gh pr merge "${SOURCE_BRANCH}" --auto --merge
 
   release:
@@ -98,7 +98,7 @@ jobs:
     needs: [draft, paths]
     environment: release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == "$default-branch" && github.event.pull_request.merged && needs.paths.outputs.package_json == 'true' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == $default-branch && github.event.pull_request.merged && needs.paths.outputs.package_json == 'true' }}
     env:
       VERSION: ${{ needs.draft.outputs.tag_name }}
     steps:
